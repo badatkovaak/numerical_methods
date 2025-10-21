@@ -14,9 +14,6 @@ class NewtonData:
     def point(self, k: int):
         return self.a + self.h * k
 
-def equidistant_nodes():
-    return [k/4 for k in range(5)]
-
 def finite_difference(data: NewtonData, m: int, k: int):
     result = 0
 
