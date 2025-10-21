@@ -49,6 +49,21 @@ def compute_at_control_points(data: LagrangeData, lagrange_poly):
         print(f"\tvalue of the function is {value_of_func}")
         print(f"\tabsolute difference is {diff}")
 
+def finite_difference(data: LagrangeData, m: int, k: int):
+    result = 0
+
+    for j in range(m):
+        result += (-1)**j * binomial(m, j)*data.f(data.points[k + m - j])
+
+    return result
+
+def omega(data: LagrangeData, k: int):
+    result = 1
+
+    for i in range(k):
+        pass
+
+
 if __name__ == "__main__":
     # x = symbol('x')
     # data = LagrangeData([1,2,3], Lambda(x:= symbols('x'), ((x-1)/3)**8))
