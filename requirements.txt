@@ -1,0 +1,4 @@
+sympy
+matplotlib
+PyQt5
+# sage
