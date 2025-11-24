@@ -3,7 +3,7 @@ from sympy.abc import x
 from src.kr2.common import SplineData
 
 
-def create_third_order_spline(data: SplineData):
+def third_order_spline_by_definition(data: SplineData):
     xs = data.xs
     syms = [list(symbols(f"a{k}(0:4)")) for k in range(1, len(xs))]
     conds = [(0, x < xs[0])]
@@ -47,4 +47,30 @@ def create_third_order_spline(data: SplineData):
     for k, v in solve(equations).items():
         p = p.subs(k, v)
 
+    return p
+
+
+def third_order_spline_by_moments(data: SplineData):
+    xs = data.xs
+    syms = [list(symbols(f"a{k}(0:2)")) for k in range(1, len(xs))]
+    moments = list(symbols(f"M:{len(xs)}"))
+    conds = [(0, x < xs[0])]
+    pieces = []
+
+    for i in range(len(xs) - 1):
+        piece = (
+            moments[i] * (x - xs[i]) ** 2 / 2
+            + ((moments[i] - moments[i + 1]) / (xs[i + 1] - xs[i]))
+            * ((x - xs[i]) ** 3)
+            / 6
+            + syms[i][0] * (x - xs[i])
+            + syms[i][1]
+        )
+        pieces.append(piece)
+        conds.append((piece, x <= xs[i + 1]))
+
+    p = Piecewise(*conds)
+
+    print(pieces)
+    print(p)
     return p
