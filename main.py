@@ -17,9 +17,7 @@ def task1():
 
     spline_equispaced = first_order_spline(data_equispaced)
     spline_chebyshev = first_order_spline(data_chebyshev)
-    print(spline_equispaced, "\n")
-    print(spline_chebyshev, "\n")
-    print()
+    print(spline_equispaced, spline_chebyshev, sep="\n\n", end="\n\n")
 
     control_points = [0.29, 0.42, 0.76]
     diffs_equispaced = compare_at_control_points(
@@ -28,19 +26,38 @@ def task1():
     diffs_chebyshev = compare_at_control_points(
         f, Lambda(x, spline_chebyshev), control_points
     )
-    print(diffs_equispaced)
-    print(diffs_chebyshev)
-    print()
+    print(diffs_equispaced, diffs_chebyshev, sep="\n", end="\n\n")
 
 
 def task2():
     a, b, n = 0, 1, 5
-    f = Lambda(x, ((x - 1) / 2) ** 9)
-    g = Lambda(x, x**2)
-    data = SplineData(g, equispaced_nodes(a, b, n))
-    spline = third_order_spline_by_moments(data)
-    # plot(g, Lambda(x, spline), (x, a, b))
+    f = Lambda(x, ((x - 2) / 2) ** 9)
+
+    data_equispaced = SplineData(f, equispaced_nodes(a, b, n))
+    data_chebyshev = SplineData(f, chebyshev_nodes(a, b, n))
+
+    spline_equispaced = third_order_spline_by_definition(data_equispaced)
+    spline_chebyshev = third_order_spline_by_moments(data_chebyshev)
+    print(spline_equispaced, spline_chebyshev, sep="\n\n", end="\n\n")
+
+    control_points = [0.29, 0.42, 0.76]
+    diffs_equispaced = compare_at_control_points(
+        f, Lambda(x, spline_equispaced), control_points
+    )
+    diffs_chebyshev = compare_at_control_points(
+        f, Lambda(x, spline_chebyshev), control_points
+    )
+    print(diffs_equispaced, diffs_chebyshev, sep="\n", end="\n\n")
+
+
+def compute_maxes():
+    a, b, n = 0, 1, 5
+
+    print(compute_max_omega(equispaced_nodes(a, b, n)))
+    print(compute_max_omega(chebyshev_nodes(a, b, n)))
 
 
 if __name__ == "__main__":
+    task1()
     task2()
+    compute_maxes()

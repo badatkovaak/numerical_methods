@@ -1,4 +1,5 @@
 from sympy import *
+from sympy.abc import x
 from typing import Callable
 from math import fabs
 
@@ -16,10 +17,12 @@ def equispaced_nodes(a: float, b: float, n: int):
 
 
 def chebyshev_nodes(a: float, b: float, n: int):
-    return [
-        (a + b) / 2 + (b - a) * cos((2 * k - 1) * pi / (2 * n)) / 2
-        for k in range(1, n + 1)
-    ]
+    return sorted(
+        [
+            (a + b) / 2 + (b - a) * cos((2 * k - 1) * pi / (2 * n)) / 2
+            for k in range(1, n + 1)
+        ]
+    )
 
 
 def compare_at_control_points(
@@ -32,4 +35,15 @@ def compare_at_control_points(
     for point in control_points:
         diffs.append(fabs(f(point) - g(point)))
 
-    return diffs
+    return list(map(lambda p: fabs(f(p) - g(p)), control_points))
+
+
+def compute_max_omega(points):
+    omega = sympify(1)
+
+    for point in points:
+        omega *= x - point
+
+    omega_prime = Poly(omega.diff().expand())
+    roots = map(lambda z: z.evalf(), omega_prime.real_roots())
+    return max(map(lambda z: abs(omega.subs(x, z).evalf()), roots))
