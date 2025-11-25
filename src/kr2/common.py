@@ -2,6 +2,7 @@ from sympy import *
 from sympy.abc import x
 from typing import Callable
 from math import fabs
+from functools import reduce
 
 
 class SplineData:
@@ -30,20 +31,11 @@ def compare_at_control_points(
     g: Callable[[float], float],
     control_points: list[float],
 ) -> list[float]:
-    diffs = []
-
-    for point in control_points:
-        diffs.append(fabs(f(point) - g(point)))
-
     return list(map(lambda p: fabs(f(p) - g(p)), control_points))
 
 
 def compute_max_omega(points):
-    omega = sympify(1)
-
-    for point in points:
-        omega *= x - point
-
+    omega = reduce(lambda z, p: z * (x - p), points, sympify(1))
     omega_prime = Poly(omega.diff().expand())
     roots = map(lambda z: z.evalf(), omega_prime.real_roots())
     return max(map(lambda z: abs(omega.subs(x, z).evalf()), roots))
