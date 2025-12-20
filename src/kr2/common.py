@@ -6,7 +6,7 @@ from functools import reduce
 
 
 class SplineData:
-    slots = ("f", "xs")
+    __slots__ = ("f", "xs")
 
     def __init__(self, f: Callable[[float], float], xs: list[float]):
         self.f = f

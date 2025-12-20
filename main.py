@@ -6,6 +6,7 @@ from src.kr2.task2 import (
     third_order_spline_by_moments,
 )
 from src.kr2.common import *
+from src.kr3.common import *
 
 
 def task1():
@@ -36,8 +37,6 @@ def task2():
     data_equispaced = SplineData(f, equispaced_nodes(a, b, n))
     data_chebyshev = SplineData(f, chebyshev_nodes(a, b, n))
 
-    spline_equispaced = third_order_spline_by_definition(data_equispaced)
-    spline_chebyshev = third_order_spline_by_moments(data_chebyshev)
     print(spline_equispaced, spline_chebyshev, sep="\n\n", end="\n\n")
 
     control_points = [0.29, 0.42, 0.76]
@@ -58,6 +57,14 @@ def compute_maxes():
 
 
 if __name__ == "__main__":
-    task1()
-    task2()
-    compute_maxes()
+    # task1()
+    # task2()
+    # compute_maxes()
+    f, a, b = Lambda(x, x * x * x * x * x), 1, 3
+    data = IntegralData(f, a, b, 6)
+    print(integrate(x * x * x * x * x, (x, a, b)))
+    # print(left_rectangles(data))
+    # print(right_rectangles(data))
+    # print(middle_rectangles(data))
+    # print(simpsons_formula(data))
+    print(interpolation_quadrature(data))
