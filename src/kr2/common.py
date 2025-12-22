@@ -39,3 +39,10 @@ def compute_max_omega(points):
     omega_prime = Poly(omega.diff().expand())
     roots = map(lambda z: z.evalf(), omega_prime.real_roots())
     return max(map(lambda z: abs(omega.subs(x, z).evalf()), roots))
+
+
+def compute_maxes():
+    a, b, n = 0, 1, 5
+
+    print(compute_max_omega(equispaced_nodes(a, b, n)))
+    print(compute_max_omega(chebyshev_nodes(a, b, n)))
