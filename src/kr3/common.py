@@ -1,5 +1,6 @@
 from sympy import *
 from sympy.abc import x, y
+from sympy.printing.latex import latex
 from functools import reduce
 from src.kr1.task1 import *
 
@@ -55,37 +56,35 @@ def interpolation_quadrature(data: IntegralData, points=None, ro=None):
         basis = lagrange_basis_poly(lagrange_data, k)
         p.append(integrate(basis * ro, (x, a, b)))
 
-    print(p)
-
     return sum(map(lambda k: f(points[k]) * p[k], range(n))).evalf(14)
 
 
 def gauss_quadrature(data: IntegralData, omega, ro):
-    a, b, f, n = data.a, data.b, data.f, data.n
+    a, b = data.a, data.b
 
     if a != -1 or b != 1:
-        e = f.expr
-        e = e.subs(x, y * 2 / (b - a) - (b + a) / (b - a))
-        f = Lambda(x, e.subs(y, x))
-        a, b = -1, 1
+        e = data.f.expr.subs(x, x * (b - a) / 2 + (a + b) / 2)
+        data.f = Lambda(x, e)
+        data.a, data.b = -1, 1
 
-    h = (b - a) / n
     omega = Poly(omega.as_expr())
     roots = list(map(lambda x: x.evalf(14), omega.real_roots()))
-    print(roots)
 
-    return interpolation_quadrature(data, roots, ro)
+    return interpolation_quadrature(data, roots, ro).evalf(14)
 
+
+expr1 = sqrt(1.2 * x + 0.7) / (1.4 * x + sqrt(1.3 * x * x + 0.5))
+expr2 = sin(0.7 * x + 0.4) / (2.2 + cos(0.3 * x * x + 0.7))
 
 a1, b1, f1 = (
     1.2,
     2.8,
-    Lambda(x, sqrt(1.2 * x + 0.7) / (1.4 * x + sqrt(1.3 * x * x + 0.5))),
+    Lambda(x, expr1),
 )
 a2, b2, f2 = (
     0.5,
     1.3,
-    Lambda(x, sin(0.7 * x + 0.4) / (2.2 + cos(0.3 * x * x + 0.7))),
+    Lambda(x, expr2),
 )
 
 
@@ -118,18 +117,14 @@ def task2():
 def task3():
     n = 10
     data1 = IntegralData(f1, a1, b1, n)
-    data2 = IntegralData(f2, a2, b2, n)
 
     print()
     print(simpsons_formula(data1))
-    print()
-    print(simpsons_formula(data2))
     print()
 
 
 def task4():
     n = 6
-    data1 = IntegralData(f1, a1, b1, n)
     data2 = IntegralData(f2, a2, b2, n)
     omega = legendre(n, x)
     ro = 1
@@ -141,7 +136,6 @@ def task4():
 
 def task5():
     n = 10
-    data1 = IntegralData(f1, a1, b1, n)
     data2 = IntegralData(f2, a2, b2, n)
 
     print()
@@ -152,7 +146,6 @@ def task5():
 def task6():
     n = 6
     data1 = IntegralData(f1, a1, b1, n)
-    data2 = IntegralData(f2, a2, b2, n)
     ro = 1 / sqrt(1 - x * x)
     omega = chebyshevt(n, x)
 
